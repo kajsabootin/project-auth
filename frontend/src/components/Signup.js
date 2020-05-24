@@ -18,6 +18,7 @@ const Form = styled.form`
     }
     input {
       width: 100%;
+      height: 20px;
     }
 `
 
@@ -28,17 +29,18 @@ const Header = styled.h1`
 `
 
 export const Signup = () => {
+  const [name, setName] = useState()
   const [email, setEmail] = useState()
   const [password, setPassword] = useState()
 
-  const url = 'https://anna-project-auth.herokuapp.com/sessions'
+  const url = 'https://anna-project-auth.herokuapp.com/users'
   // posts email and password to the api
 
-  const handleLogin = event => {
+  const handleSignin = event => {
     event.preventDefault()
     fetch('url', {
       method: 'POST',
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, name }),
       headers: { 'Content-Type': 'application/json' }
     })
     //Här ska det komma en .then av något slag 
@@ -53,7 +55,7 @@ export const Signup = () => {
         <label for='email'>Email  <input type='text' id='email' name='email' /> </label>
         <label for='password'>Password  <input type='text' id='password' name='password' /> </label>
       </Form>
-      <Button title='Register' onClick={handleLogin} />
+      <Button title='Register' onClick={handleSignin} />
     </Section>
   )
 }

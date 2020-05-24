@@ -21,6 +21,7 @@ const Form = styled.form`
     }
     input {
       width: 100%;
+      height: 20px;
     }
 `
 
@@ -36,8 +37,6 @@ const Text = styled.h2`
   margin-top: 40px;
   margin-bottom: 1px;
 `
-
-
 
 export const Login = () => {
   const [email, setEmail] = useState()

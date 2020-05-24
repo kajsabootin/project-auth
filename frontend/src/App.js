@@ -1,6 +1,7 @@
 import React from 'react'
 import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { Login } from 'components/Login'
+import { Signup } from 'components/Signup'
 
 // Home page: Login form and a button that redirects with React routes to sign up-form
 // After sign up: Redirects back to home page for login
@@ -13,6 +14,9 @@ export const App = () => {
       <Switch>
         <Route path='/' exact>
           <Login />
+        </Route>
+        <Route path='/signup'>
+          <Signup />
         </Route>
       </Switch>
     </BrowserRouter>

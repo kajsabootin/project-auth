@@ -8,9 +8,9 @@ const StyledButton = styled.button`
   border: 2px solid #cff532;
   text-transform: uppercase;
   cursor: pointer;
-  padding: 12px;
+  padding: 8px;
   border-radius: 4px;
-  font-size: 24px;
+  font-size: 22px;
   display: block;
   margin-top: 25px;
 `

@@ -1,12 +1,15 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Button } from './Button'
+import { Link } from 'react-router-dom'
 
 const Section = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+    a {
+      text-decoration: none;
+    }
 `
 
 const Form = styled.form`
@@ -26,6 +29,15 @@ const Header = styled.h1`
   font-size: 40px;
   margin-top: 40px;
 `
+
+const Text = styled.h2`
+  color:  #254b62;
+  font-size: 20px;
+  margin-top: 40px;
+  margin-bottom: 1px;
+`
+
+
 
 export const Login = () => {
   const [email, setEmail] = useState()
@@ -53,6 +65,10 @@ export const Login = () => {
         <label for='password'>Password  <input type='text' id='password' name='password' /> </label>
       </Form>
       <Button title='Login' onClick={handleLogin} />
+      <Text>New user? Sign up here. </Text>
+      <Link to={'/signup'}>
+        <Button title='Register' />
+      </Link>
     </Section>
   )
 }

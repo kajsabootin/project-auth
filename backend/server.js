@@ -29,12 +29,14 @@ const User = mongoose.model('User', {
 })
 
 const authenticateUser = async (req, res, next) => {
+
+  //Add a try catch here
   const user = await User.findOne({ accessToken: req.header('Authorization') })
   if (user) {
     req.user = user
     next()
   } else {
-    res.status(403).json({ loggedOut: true, message: 'Could not access'})
+    res.status(403).json({ loggedOut: true, message: 'Could not access' })
   }
 }
 
@@ -54,6 +56,8 @@ app.get('/', (req, res) => {
   res.send('Hello world')
 })
 
+
+// Create user - sign up
 app.post('/users', async (req, res) => {
   try {
     const { name, email, password } = req.body
@@ -66,18 +70,26 @@ app.post('/users', async (req, res) => {
   }
 })
 
+// Secure endpoint, access after login
 app.get('/secrets', authenticateUser)
 app.get('/secrets', (req, res) => {
-  res.status(201).json(req.user)
+  res.status(201).json(req.user) //byt till email och id istället för req.user
 })
 
+// Login existing user
 app.post('/sessions', async (req, res) => {
-  const user = await User.findOne({ email: req.body.email })
-  if (user && bcrypt.compareSync(req.body.password, user.password)) {
-    res.json({ userId: user._id, accessToken: user.accessToken })
-  } else {
-    res.json({ notFound: true })
+
+  try {
+    const user = await User.findOne({ email: req.body.email })
+    if (user && bcrypt.compareSync(req.body.password, user.password)) {
+      res.json({ userId: user._id, accessToken: user.accessToken })
+    } else {
+      res.status(404).json({ notFound: true })
+    }
+  } catch (err) {
+    res.status(404).json({ notFound: true })
   }
+
 })
 
 // Start the server

@@ -1,73 +1,122 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Button } from './Button'
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import styled from "styled-components";
+import { Button } from "./Button";
+import { Link, useHistory } from "react-router-dom";
 
 const Section = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-    a {
-      text-decoration: none;
-    }
-`
+  a {
+    text-decoration: none;
+  }
+`;
 
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-    label {
-      margin: 10px;
-      color:  #254b62;
-    }
-    input {
-      width: 100%;
-      height: 20px;
-    }
-`
+  label {
+    margin: 10px;
+    color: #254b62;
+  }
+  input {
+    width: 100%;
+    height: 20px;
+  }
+`;
 
 const Header = styled.h1`
-  color:  #254b62;
+  color: #254b62;
   font-size: 40px;
   margin-top: 40px;
-`
+`;
 
 const Text = styled.h2`
-  color:  #254b62;
+  color: #254b62;
   font-size: 20px;
   margin-top: 40px;
   margin-bottom: 1px;
-`
+`;
 
 export const Login = () => {
-  const [email, setEmail] = useState()
-  const [password, setPassword] = useState()
+  const [signInValues, setSignInValues] = useState({
+    email: "",
+    password: "",
+  });
+  const history = useHistory();
+  const [error, setError] = useState("");
+  const url = "http://localhost:8080/sessions";
 
-  const url = 'https://anna-project-auth.herokuapp.com/sessions'
   // posts email and password to the api
-
-  const handleLogin = event => {
-    event.preventDefault()
-    fetch('url', {
-      method: 'POST',
-      body: JSON.stringify({ email, password }),
-      headers: { 'Content-Type': 'application/json' }
+  const handleLogin = (event) => {
+    event.preventDefault();
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify(signInValues),
+      headers: { "Content-Type": "application/json" },
     })
-    //Här ska det komma en .then av något slag 
-    //vi behöver local storage någonstans
-  }
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Could not find your user.");
+        }
+        res.json().then((data) => {
+          if (data.notFound !== true) {
+            localStorage.setItem("accessToken", data.accessToken);
+            history.push("/memberpage");
+          }
+        });
+      })
+      .catch((err) => {
+        setError(err.message);
+      })
+      .then(() => {
+        setSignInValues({
+          email: "",
+          password: "",
+        });
+      });
+  };
 
   return (
     <Section>
       <Header> Welcome</Header>
-      <Form>
-        <label for='email'>Email  <input type='text' id='email' name='email' /> </label>
-        <label for='password'>Password  <input type='text' id='password' name='password' /> </label>
+      <Form onSubmit={handleLogin}>
+        <label for="email">
+          Email
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            value={signInValues.email}
+            onChange={(event) =>
+              setSignInValues({ ...signInValues, email: event.target.value })
+            }
+          />
+        </label>
+        <label for="password">
+          Password
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            minLength="6"
+            value={signInValues.password}
+            onChange={(event) =>
+              setSignInValues({ ...signInValues, password: event.target.value })
+            }
+          />
+        </label>
+
+        <Button type="submit" title="Login" />
+
+        <Text>New user? Sign up here. </Text>
+        <Link to={"/signup"}>
+          <Button title="Register" />
+        </Link>
+        {error && <p>{error}</p>}
       </Form>
-      <Button title='Login' onClick={handleLogin} />
-      <Text>New user? Sign up here. </Text>
-      <Link to={'/signup'}>
-        <Button title='Register' />
-      </Link>
     </Section>
-  )
-}
+  );
+};
